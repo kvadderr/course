@@ -1,0 +1,247 @@
+var json = [
+{
+    direction: "Курсы по программированию",
+    course: [
+    {
+        name: 'Java MIDDLE',
+        detail: 'Подтвердите свои знания на срений уровень «MIDDLE» по языку программирования JAVA',
+        price: "2500",
+        timer: '20 минут'
+    },
+    {
+        name: 'Конфигуратор 1С',
+        detail: 'Запишитесь на встречу, приходите с паспортом (и номером кошелька)',
+        price: 2700,
+        timer: '2 минутs'
+    },
+    {
+        name: 'Специалист Photoshop',
+        detail: 'Запишитесь на встречу, приходите с паспортом (и номером кошелька)',
+        price: 2700,
+        timer: '2 минутs'
+    }
+    ]
+},
+
+{
+    direction: "Курсы по lhjxrt",
+    course: [
+    {
+        name: 'lool',
+        detail: 'Для тех, кто подавал заявку на кредит в любом банке Казахстана',
+        price: 2500,
+        timer: '20 минут'
+    },
+    {
+        name: 'Сбербанк',
+        detail: 'Запишитесь на встречу, приходите с паспортом (и номером кошелька)',
+        price: 2700,
+        timer: '2 минутs'
+    }
+    ]
+},
+
+
+]
+
+
+
+
+
+
+
+
+SELECT json_object(
+	'question', question.title,
+	'answer', json_group_array(
+		json_object(
+			'name', answer.name, 
+			'detail', answer.boolean))) json_result 
+		FROM question, answer
+		WHERE question.id_question = answer.id_question
+		GROUP BY question.title
+
+
+
+
+        let answer = [];
+
+        for (var i=0; i<3; i++){
+            answer.push(new Answer(i, i));
+        }
+        
+        let question = [];
+        for (var i = 10; i <14; i++){
+            question.push(new Question(i, answer))
+        }
+        
+         console.log(answer);
+         console.log(question);
+        
+        const asl = 
+        [
+            new Question("232323"), [new Answer("323",3)]
+        ]
+        
+        
+        //Сам тест
+        const quiz = new Quiz(1, question, results);
+        
+
+
+
+
+
+
+
+
+
+        //Подключаем библиотеки
+const express = require('express');
+const cors = require("cors");
+const open = require("open");
+const { json } = require('body-parser');
+const sqlite3 = require('sqlite3').verbose();
+
+//Подключение к БД
+let db = new sqlite3.Database('db.sqlite');
+
+
+//Создаем приложение на основе экспресс
+const app = express();
+
+//Приложение использует cors
+app.use(cors());
+
+//Чтобы читал 'application/json'
+app.use(express.json());
+app.use(express.urlencoded({
+  extended: true
+}));
+
+//Читаем данные из выбранного файла JSON и отдаем клиенту
+app.get('/course', function (request, response) {  
+ 
+    let sql = "SELECT json_object('direction', direction.name,'course', json_group_array(json_object('name', course.name, 'detail', course.detail, 'price', course.price, 'timer', course.timer))) json_result FROM direction, course WHERE direction.id_direction = course.id_direction GROUP BY direction.name";
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            throw err;
+        }
+      
+        response.send(rows);
+        console.log(rows);
+    });
+    
+});
+
+app.post('/course', function(request, response){
+    
+    let courseJson = JSON.parse(request.body.jsonData);
+    console.log(courseJson);
+    let id_course;
+    let id_question;
+    let create_question ='';
+    let create_answer = [];
+    let answer = {};
+
+    let create_course = "INSERT INTO course(name, price, detail, timer, id_direction) VALUES ('" + request.body.name+"', '" + request.body.price+"', '" + request.body.detail+"','" + request.body.timer+"', '"+ request.body.id_direction+"')";
+    db.run(create_course, function(err) {
+        if (err) {
+          return console.error(err.message);
+        }
+        id_course = this.lastID
+        for (var i =0; i < courseJson.length; i++){
+            create_question = create_question + "('" + courseJson[i].question + "', '" + id_course+ "'),";
+            create_answer.push(courseJson[i].answers);
+        }   
+        create_question.substring();
+        sql_create_question = "INSERT INTO question(title, id_course) VALUES " + create_question.slice(0, -1);
+        create_answer.slice(0, -1)
+        answer = {...answer, create_answer}
+        console.log(create_answer[0][0]);
+        db.run(sql_create_question, function(err) {
+            if (err) {
+                return console.error(err.message);
+            }
+            
+            id_question = this.lastID;
+            let string = '';
+            for (var i =0; i < create_answer.length; i++){
+                for (var j =0; j < create_answer[i].length; j++){
+                    let id = 0;
+                    if (j == 0) id = 1;
+                    else id = 0;
+                    id_q = id_question - i;
+                    console.log("ddd" + id_q)
+                    string = string + "("+id_q +", '" + create_answer[i][j] + "', " + id + ")";
+                }
+            }
+
+            console.log(string);
+            
+            sql_create_answer = "INSERT INTO answer (id_question, name, boolean) VALUES ("+id_question+", 'dddd', 1)";
+            db.run(sql_create_answer, function(err) {
+                if (err) {
+                    return console.error(err.message);
+                }
+                console.log("Вопрос добавлен")
+            });
+        });      
+
+        
+
+    });
+
+
+
+   
+
+    
+
+})
+
+//Читаем данные из выбранного файла JSON и отдаем клиенту
+app.get('/test', function (request, response) {  
+ 
+    let sql = "SELECT json_object('question', question.title,'answer', json_group_array(json_object('name', answer.name, 'detail', answer.boolean))) json_result FROM question, answer WHERE question.id_question = answer.id_question GROUP BY question.title";
+
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            throw err;
+        }
+      
+        response.send(rows);
+        console.log(rows);
+    });
+    
+});
+
+
+app.get('/users', function(request, response) {
+    let sql = 'SELECT * FROM users WHERE login = "'+request.query.login+'" AND password = "'+request.query.pass+'"';
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            throw err;
+        }
+      
+        response.send(rows);
+        
+    });
+})
+
+app.get('/direction', function(request, response) {
+    let sql = 'SELECT * FROM direction';
+    db.all(sql, [], (err, rows) => {
+        if (err) {
+            throw err;
+        }
+      
+        response.send(rows);
+        
+    });
+})
+
+//Приложение слушает 4000 порт
+app.listen(4000);
+console.log("Сервер на порту 4000: Запущен");
