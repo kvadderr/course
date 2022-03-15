@@ -132,7 +132,7 @@ class Result
 
 
 id = localStorage.getItem("id_course")
-const url = new URL("http://localhost:4000/test/?id="+id);
+const url = new URL("http://95.213.224.23:4000/test/?id="+id);
 let quiz        
 json = []
 
@@ -230,7 +230,7 @@ function Update()
            msg = 'Ваш диплом доступен в личном кабинете'
            let code = pass_gen(7);
            let id_user = localStorage.getItem("id_user");
-           fetch ('http://localhost:4000/result', {
+           fetch ('http://95.213.224.23:4000/result', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'

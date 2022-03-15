@@ -43,7 +43,7 @@
           window.location.href = "index.html";
         }
 
-        let url = new URL("http://localhost:4000/courseName");
+        let url = new URL("http://95.213.224.23:4000/courseName");
         fetch(url).then(function(response) {
             response.json().then(function(data) {
                 var loadJson = data;
@@ -56,7 +56,7 @@
             let check;
             if (visibleStatus.checked) check = 1;
             else check = 0;
-            fetch ('http://localhost:4000/course', {
+            fetch ('http://95.213.224.23:4000/course', {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json'
@@ -97,7 +97,7 @@
 
         function loadData(){
 
-            const url = new URL("http://localhost:4000/direction");
+            const url = new URL("http://95.213.224.23:4000/direction");
             fetch(url).then(function(response) {
                 response.json().then(function(data) {
                     var loadJson = data;
@@ -108,7 +108,7 @@
 
             let id = selector.value;
 
-            let urls = new URL("http://localhost:4000/courseData?id="+id);
+            let urls = new URL("http://95.213.224.23:4000/courseData?id="+id);
             fetch(urls).then(function(response) {
                 response.json().then(function(data) {
                     var loadJson = data;

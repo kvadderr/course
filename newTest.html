@@ -40,7 +40,7 @@
         let inputPrice = document.getElementById("inputPrice");
         let inputTimer = document.getElementById("inputTimer");
         let inputDetail = document.getElementById("inputDetail");
-        const url = new URL("http://localhost:4000/direction");
+        const url = new URL("http://95.213.224.23:4000/direction");
         fetch(url).then(function(response) {
             response.json().then(function(data) {
                 var loadJson = data;
@@ -56,7 +56,7 @@
 
         function createNewCourse(){
             console.log(JSON.parse(textarea.value))
-            fetch ('http://localhost:4000/course', {
+            fetch ('http://95.213.224.23:4000/course', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
